@@ -2,9 +2,6 @@ package com.amaiz.example.cs.model;
 
 import com.amaiz.example.quotes.api.Quote;
 import com.amaiz.example.utils.MathUtils;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.internal.fastinfoset.algorithm.DoubleEncodingAlgorithm;
 
 public class CandleBuilder {
 
