@@ -15,9 +15,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Synchronization policy:
  * 1. Each class object is supposed to be user by one "writer" and multiple "reader" threads
- * 2. Only "writer" thread can invoke {@link #update(Quote)} and {@link #forceStoreCompleted(long)} methods
+ * 2. Only "writer" thread can invoke {@link #update(Quote)} and {@link #checkStaleCandle(long)} methods
  * 3. "Reader" threads can invoke only {@link #getCompletedCandles()} method
- * 4. Synchronization of {@link #candles }between writer and reader threads is performed by {@link #rwLock} read-write lock
+ * 4. Synchronization of {@link #candles } between writer and reader threads is performed via {@link #rwLock}
  *
  */
 public class CandleAggregator {
@@ -35,7 +35,7 @@ public class CandleAggregator {
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    public CandleAggregator(AggregationPeriod period, int length) {
+    CandleAggregator(AggregationPeriod period, int length) {
         this.period = period;
         this.candles = new Candle[length];
         this.start = 0;
@@ -67,7 +67,7 @@ public class CandleAggregator {
         lastUpdateTS = quote.getTime();
     }
 
-    public void forceStoreCompleted(long time) {
+    public void checkStaleCandle(long time) {
         if(current != null
             && time > period.getNextStartTime(lastUpdateTS))
         {
@@ -83,7 +83,7 @@ public class CandleAggregator {
             candles[nextIndex] = current.toCandle();
             start = nextIndex >= start ? start : start + 1;
             length = Math.min(length + 1, candles.length);
-            logger.debug("Stored Candle {}", candles[nextIndex]); //todo change to TRACE
+            logger.debug("Stored Candle {}", candles[nextIndex]);
         } finally {
             rwLock.writeLock().unlock();
         }

@@ -7,11 +7,18 @@ public enum AggregationType {
 
     private long lengthMS;
 
-    private AggregationType(long lengthMS) {
+    AggregationType(long lengthMS) {
         this.lengthMS = lengthMS;
     }
 
     public long getLengthMS() {
         return lengthMS;
+    }
+
+    @Override
+    public String toString() {
+        return "AggregationType{" +
+            "lengthMS=" + lengthMS +
+            '}';
     }
 }

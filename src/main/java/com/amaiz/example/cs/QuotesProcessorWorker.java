@@ -23,7 +23,7 @@ public class QuotesProcessorWorker {
 
     private final static Logger logger = LoggerFactory.getLogger(QuotesProcessorWorker.class);
 
-    private final static int QUEUE_SIZE = 5000; // subject to be changed based on prfiling results
+    private final static int QUEUE_SIZE = 5000; // subject to be changed based on profiling results
 
     private final static AtomicInteger NUMBER = new AtomicInteger(0);
     private final static AggregationPeriod period = new AggregationPeriod(AggregationType.M, 1);
@@ -63,7 +63,7 @@ public class QuotesProcessorWorker {
             long time = System.currentTimeMillis();
             long nextStaleCheck = lastStaleCheck + period.getLengthMS();
             if(time > nextStaleCheck) {
-                cachedAggregators.forEach((s, a) -> a.forceStoreCompleted(time));
+                cachedAggregators.forEach((s, a) -> a.checkStaleCandle(time));
                 lastStaleCheck = time;
             }
 
